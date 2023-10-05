@@ -1,0 +1,39 @@
+.container {
+    background: linear-gradient(#fafbfd, 0, #f6f7f8, 85)
+}
+
+.buttonContainer {
+    padding: 8px 0px 8px 0;
+
+
+}
+
+.buttonContainer> :nth-child(n+2) {
+    margin-left: 12px;
+}
+
+.buttonContainer> :nth-child(n) {
+    background-color: lightgray;
+    border-radius: 8px;
+}
+
+.tableKeyContainer {
+    display: flex;
+    flex-flow: row nowrap;
+    align-items: center;
+}
+
+.tableKeyContainer> :nth-child(n) {
+    padding: 0px;
+    margin: 8px 8px 8px 0;
+    font-size: 1.1em;
+
+
+}
+
+.transactionDataContainer {
+    padding: 8px 16px 8px 16px;
+    background-color: white;
+    background: white;
+
+}

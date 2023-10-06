@@ -2,9 +2,10 @@ import { injectable } from "inversify";
 import { ethers } from "ethers";
 import { TransactionResponse } from "ethers";
 import { TransactionReceipt } from "ethers";
+import { Block } from "ethers";
 
 export interface IEthersProvider {
-  fetchBlockData(value: number): void;
+  fetchBlockData(value: number): Promise<Block | null>;
   fetchTransaction(txnHash: string): Promise<TransactionResponse | null>;
   fetchTransactionReceipt(txnHash: string): Promise<TransactionReceipt | null>;
 }
@@ -20,10 +21,13 @@ export class EthersProvider implements IEthersProvider {
     );
   }
 
-  async fetchBlockData(value: number) {
+  async fetchBlockData(value: number): Promise<Block | null> {
     console.log(`[EthersProvider] - fetchBlockData(${value})`);
     console.log(`Env: ${JSON.stringify(process.env)}`);
-    const blockResponse = await this.ethersProvider.getBlock(value);
+    const blockResponse: Block | null = await this.ethersProvider.getBlock(
+      value,
+      true
+    );
     console.log(`Block Response: ${JSON.stringify(blockResponse)}`);
     return blockResponse;
   }

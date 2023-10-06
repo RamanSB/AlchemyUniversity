@@ -11,6 +11,8 @@ import TYPES from "../config/inversify_types";
 import { IEthersProvider } from "../injectables/ethersProvider";
 import Link from "next/link";
 import { TransactionResponse } from "ethers";
+import { TransactionReceipt } from "ethers";
+import { Block } from "ethers";
 
 const { Search } = Input;
 
@@ -41,16 +43,21 @@ const SearchBar = () => {
             TYPES.EthersProvider
           ).fetchTransaction(value);
 
-        const txnReceipt = await DIContainer.get<IEthersProvider>(
-          TYPES.EthersProvider
-        ).fetchTransactionReceipt(value);
+        const txnReceipt: TransactionReceipt | null =
+          await DIContainer.get<IEthersProvider>(
+            TYPES.EthersProvider
+          ).fetchTransactionReceipt(value);
 
-        console.log(`[SearchBar] - txnReciept: ${txnReceipt}`);
+        const blockResponse: Block | null =
+          await DIContainer.get<IEthersProvider>(
+            TYPES.EthersProvider
+          ).fetchBlockData(txnResponse?.blockNumber as number);
 
         if (txnResponse && txnReceipt) {
           const finalTxnResults = Object.assign({
             receipt: txnReceipt,
             response: txnResponse,
+            block: blockResponse,
           });
 
           setSearchResults(finalTxnResults);
@@ -62,6 +69,15 @@ const SearchBar = () => {
           router.push(`/tx/${value}`);
         }
       }
+    }
+    const numberPattern: RegExp = /^\d+$/;
+    if (numberPattern.test(cleanValue)) {
+      const blockData: Block | null = await DIContainer.get<IEthersProvider>(
+        TYPES.EthersProvider
+      ).fetchBlockData(Number.parseInt(cleanValue));
+      console.log(`[SearchBar] BlockData: ${JSON.stringify(blockData)}`);
+      setSearchResults(blockData);
+      router.push(`/block/${cleanValue}`);
     }
   };
 

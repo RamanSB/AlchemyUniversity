@@ -1,11 +1,8 @@
 "use client";
 import { Alchemy, Network } from "alchemy-sdk";
-import Title from "antd/es/typography/Title";
-import SearchBar from "./components/SearchBar";
-import { Badge, Col, Row, Statistic } from "antd";
 import dotenv from "dotenv";
-import { GlobalContextProvider } from "./contexts/GlobalContext";
-import { useEffect, useState } from "react";
+import { useContext, useEffect } from "react";
+import { GlobalContext, IGlobalState } from "./contexts/GlobalContext";
 
 dotenv.config();
 
@@ -21,7 +18,19 @@ const alchemy = new Alchemy(config);
 // const ethersProvider = alchemy.config.getProvider();
 
 export default function Home() {
-  useEffect(() => {}, []);
+  const contextValue: IGlobalState = useContext<IGlobalState>(GlobalContext);
+  const { setPage } = contextValue;
+  useEffect(() => {
+    let isMounted = true;
+
+    if (isMounted) {
+      setPage("home");
+    }
+
+    return () => {
+      isMounted = false;
+    };
+  }, [setPage]);
 
   return <></>;
 }

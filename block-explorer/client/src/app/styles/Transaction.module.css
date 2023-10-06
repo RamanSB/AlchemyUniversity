@@ -35,5 +35,11 @@
     padding: 8px 16px 8px 16px;
     background-color: white;
     background: white;
+    box-shadow: 0 0.5rem 1.2rem rgb(189 197 209 / 20%);
+    margin-top: 12px;
+}
 
+.moreDetailsContainer {
+    margin-top: 16px;
+    box-shadow: 0 0.5rem 1.2rem rgb(189 197 209 / 20%);
 }

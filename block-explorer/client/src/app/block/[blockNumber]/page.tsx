@@ -136,8 +136,8 @@ const BlockGasAndData = () => {
   const contextValue: IGlobalState = useContext<IGlobalState>(GlobalContext);
   const block: Block = contextValue.searchResults as Block;
   const metadataMap: Map<string, string> = new Map([
-    ["Gas Used", `${block.gasUsed}`],
-    ["Gas Limit", `${block.gasLimit}`],
+    ["Gas Used", `${block.gasUsed.toLocaleString()}`],
+    ["Gas Limit", `${block.gasLimit.toLocaleString()}`],
     ["Extra Data", "-"],
     ["Ether Price", `-`],
   ]);

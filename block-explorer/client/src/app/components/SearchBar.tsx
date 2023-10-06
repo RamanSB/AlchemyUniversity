@@ -9,10 +9,10 @@ import { useContext } from "react";
 import { DIContainer } from "../config/inversify.config";
 import TYPES from "../config/inversify_types";
 import { IEthersProvider } from "../injectables/ethersProvider";
-import Link from "next/link";
 import { TransactionResponse } from "ethers";
 import { TransactionReceipt } from "ethers";
 import { Block } from "ethers";
+import { IEtherscanClient } from "../injectables/etherscanClient";
 
 const { Search } = Input;
 
@@ -30,6 +30,24 @@ const SearchBar = () => {
     // value must be either: a transaction hash, block number or public address.
     // addresses are 160 bits or 40 characters in ethereum (omitting the 0x)
     console.log(`onSearchHandler(${value})`);
+
+    const numberPattern: RegExp = /^\d+$/;
+    // Search by Address (EOA - 40 characters or 42 if prefix is '0x')
+    if (
+      !numberPattern.test(cleanValue) &&
+      (cleanValue.length == 42 || cleanValue.length == 40)
+    ) {
+      if (cleanValue.length == 40) {
+        cleanValue = "0x" + cleanValue;
+      }
+      const txns: TransactionResponse[] =
+        await DIContainer.get<IEtherscanClient>(
+          TYPES.EtherscanClient
+        ).fetchAllTransactions(cleanValue);
+      console.log(`[SearchBar] - ${JSON.stringify(txns)}`);
+    }
+
+    // Search by Transaction Hash
     if (cleanValue.length === 64) {
       console.log(`Searching Txn Hash: ${value}`);
       cleanValue = "0x" + cleanValue;
@@ -70,7 +88,8 @@ const SearchBar = () => {
         }
       }
     }
-    const numberPattern: RegExp = /^\d+$/;
+
+    // Search By Block #
     if (numberPattern.test(cleanValue)) {
       const blockData: Block | null = await DIContainer.get<IEthersProvider>(
         TYPES.EthersProvider
